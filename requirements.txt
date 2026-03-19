@@ -1,0 +1,4 @@
+# Dependencias do projeto Python
+# Gerado a partir do ambiente .venv em 2026-03-19
+
+pip==25.3
