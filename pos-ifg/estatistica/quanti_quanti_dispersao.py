@@ -11,30 +11,47 @@ csv_path = base_dir.parent / "arquivos" / "life_expec_alterado.csv"
 df = pd.read_csv(csv_path, sep=';', decimal='.', encoding='utf-8-sig')
 
 # Remover valores nulos para as variaveis do grafico de dispersao
-df = df.dropna(subset=['Incidents_HIV', 'Thinness_ten_nineteen_years'])
+df = df.dropna(subset=['Schooling', 'Life_expectancy'])
 
-# Grafico de dispersao simples, com uma unica cor
+# Grafico de dispersao usando a paleta Set2
 fig, ax = plt.subplots(figsize=(12, 6))
 sns.scatterplot(
     data=df,
-    x='Incidents_HIV',
-    y='Thinness_ten_nineteen_years',
-    color='black',
+    x='Schooling',
+    y='Life_expectancy',
+    color=sns.color_palette('Set2')[0],
     s=25,
     alpha=0.9,
     ax=ax
 )
 
+# Linha de regressao linear para evidenciar a tendencia de correlacao
+sns.regplot(
+    data=df,
+    x='Schooling',
+    y='Life_expectancy',
+    scatter=False,
+    ci=None,
+    line_kws={'color': sns.color_palette('Set2')[1], 'linewidth': 2},
+    ax=ax
+)
+
 # Labels
 ax.set_title(
-    'Incidentes de VIH vs Prevalencia de Magreza em Adolescentes',
+    'Relação entre Escolaridade e Expectativa de Vida\n'
+    'X: Média de anos de educação formal (25+ anos) | '
+    'Y: Expectativa média de vida (ambos os sexos)',
     fontsize=14,
     fontweight='bold',
     pad=20
 )
 
-ax.set_xlabel('Incidentes de VIH por 1000 habitantes (15 a 49 anos)', fontsize=12, fontweight='bold')
-ax.set_ylabel('Prevalencia de magreza (10 a 19 anos, IMC < -2 DP)', fontsize=12, fontweight='bold')
+ax.set_xlabel('Média de anos de educação formal (25+ anos)', fontsize=12, fontweight='bold')
+ax.set_ylabel('Expectativa média de vida (ambos os sexos)', fontsize=12, fontweight='bold')
+
+# Pearson
+r = df['Schooling'].corr(df['Life_expectancy'], method='pearson')
+print(f'Correlação de Pearson: {r:.4f}')
 
 plt.tight_layout()
 plt.show()
